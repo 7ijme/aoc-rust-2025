@@ -42,12 +42,10 @@ pub fn part_two(input: &str) -> Option<u64> {
                 // Passed clockwise
                 passed += 1;
             }
-        } else if dir == -1 && previous != 0 {
-            if previous <= num.rem(100) {
+        } else if dir == -1 && previous != 0 && previous <= num.rem(100) {
                 // Passed counter-clockwise
                 passed += 1;
             }
-        }
 
         // Multiples full laps
         passed += num / 100;

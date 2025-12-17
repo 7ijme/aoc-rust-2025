@@ -5,7 +5,7 @@ pub fn part_one(input: &str) -> Option<u64> {
 }
 
 pub fn part_two(input: &str) -> Option<u64> {
-    Some(sol(input, 14))
+    Some(sol(input, 12))
 }
 
 fn sol(input: &str, max_digits: usize) -> u64 {

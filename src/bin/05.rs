@@ -1,6 +1,6 @@
 advent_of_code::solution!(5);
 
-fn split_input(input: &str) -> (Vec<(usize, usize)>, Vec<(usize)>) {
+fn split_input(input: &str) -> (Vec<(usize, usize)>, Vec<usize>) {
     let mut sections = input.split("\n\n");
     let first_section = sections.next().unwrap();
     let second_section = sections.next().unwrap();
@@ -36,7 +36,23 @@ pub fn part_one(input: &str) -> Option<u64> {
 }
 
 pub fn part_two(input: &str) -> Option<u64> {
-    None
+    let (mut ranges, _) = split_input(input);
+    ranges.sort_by_key(|(start, _)| *start);
+
+    let mut counter = 0;
+    let mut hi = 0;
+
+    for (start, end) in ranges {
+        if start > hi {
+            counter += end - start + 1;
+            hi = end;
+        } else if start <= hi && end > hi {
+            counter += end - hi;
+            hi = end;
+        }
+    }
+
+    Some(counter as u64)
 }
 
 #[cfg(test)]
@@ -52,7 +68,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        // assert_eq!(result, Some(14));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(14));
     }
 }

@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 advent_of_code::solution!(7);
 
 pub fn part_one(input: &str) -> Option<u64> {
@@ -47,14 +49,60 @@ pub fn part_one(input: &str) -> Option<u64> {
         new_positions.sort();
         new_positions.dedup();
         positions = new_positions;
-
     }
 
     Some(counter)
 }
 
 pub fn part_two(input: &str) -> Option<u64> {
-    None
+    let grid: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
+
+    let mut positions = HashMap::new();
+    positions.insert(grid[0].iter().position(|c| *c == 'S')?, 1);
+
+    // println!("{}", grid[0].iter().collect::<String>());
+
+    let mut counter = 1;
+
+    for row in grid.iter().skip(1) {
+        let mut new_positions = positions.clone();
+        for (idx, amount) in &positions {
+            if row[*idx] == '^' {
+                // Remove current position from new_positions
+                new_positions.remove(idx);
+                if *idx > 0 {
+                    // instead of inserting, if it already exists, add amount
+                    *new_positions.entry(*idx - 1).or_insert(0) += amount;
+                }
+                if *idx + 1 < row.len() {
+                    *new_positions.entry(*idx + 1).or_insert(0) += amount;
+                }
+
+                counter += amount;
+                // print!("{} ", amount);
+            }
+        }
+
+        /* // Logging (very cool)
+        for (idx, char) in row.iter().enumerate() {
+            if positions.contains_key(&idx) {
+                if *char == '^' {
+                    print!("^");
+                } else {
+                    print!("|");
+                }
+            } else if *char == '^' {
+                print!("*");
+            } else {
+                print!(".");
+            }
+        }
+        println!(); */
+
+        positions = new_positions;
+    }
+
+    Some(counter)
 }
 
 #[cfg(test)]
@@ -70,6 +118,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(40));
     }
 }
